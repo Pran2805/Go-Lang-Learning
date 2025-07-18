@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func variables() {
@@ -71,6 +72,21 @@ func conversion() {
 	}
 }
 
+func timeManipulation() {
+	fmt.Println("Time library")
+
+	currentTime := time.Now()
+	fmt.Println(currentTime)
+
+	fmt.Println(currentTime.Format("01-02-2006"))
+	fmt.Println(currentTime.Format("01-02-2006 Monday"))
+	fmt.Println(currentTime.Format("01-02-2006 15:04:05 Monday")) // this is a syntax we can't change the 01-02-2006 otherwise it will give wrong values same with time and day
+
+	createdDate := time.Date(2005, time.May, 28, 21, 21, 21, 21, time.UTC)
+	fmt.Println(createdDate)
+	fmt.Println(createdDate.Format("01-02-2006 Monday"))
+}
+
 // if the first letter is captial then it is the public otherwise private
 const LoginToken string = "This is my variable token"
 
@@ -78,5 +94,6 @@ func main() {
 
 	// variables()
 	// userInput()
-	conversion()
+	// conversion()
+	timeManipulation()
 }
