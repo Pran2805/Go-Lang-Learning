@@ -80,7 +80,23 @@ func slices() {
 }
 
 func maps() {
+	languages := make(map[string]string)
 
+	languages["js"] = "Javascript"
+	languages["go"] = "GoLang"
+	languages["py"] = "Python"
+	languages["ts"] = "Typescript"
+
+	fmt.Println(languages)
+	fmt.Println(languages["js"])
+
+	delete(languages, "ts")
+	fmt.Println(languages)
+
+	// loops
+	for key, value := range languages {
+		fmt.Printf("For key %v, value is %v\n", key, value)
+	}
 }
 func main() {
 	// pointers()
