@@ -98,9 +98,25 @@ func maps() {
 		fmt.Printf("For key %v, value is %v\n", key, value)
 	}
 }
+
+type User struct {
+	Name   string
+	Email  string
+	Status bool
+	Age    int
+}
+
+func structures() {
+	// init struct
+	pranav := User{"Pranav", "pranavshinde.as@gmail.com", true, 20}
+	fmt.Println(pranav)
+	fmt.Printf("%+v", pranav)
+	fmt.Println(pranav.Name)
+}
 func main() {
 	// pointers()
 	// array()
 	// slices()
-	maps()
+	// maps()
+	structures() // no oop in go lang
 }
