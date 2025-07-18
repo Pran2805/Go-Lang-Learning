@@ -1,13 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
-// if the first letter is captial then it is the public otherwise private
-const LoginToken string = "This is my variable token"
-
-func main() {
+func variables() {
 	var username string = "Pranav"
 
 	fmt.Println(username)
@@ -36,5 +35,27 @@ func main() {
 	fmt.Println(numberOfUser)
 	fmt.Printf("Type of Variable: %T \n", numberOfUser)
 
-	fmt.Print(LoginToken)
+	fmt.Println(LoginToken)
+
+}
+
+func userInput() {
+	welcome := "Welcome to user input"
+	fmt.Println(welcome)
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Enter something here:")
+
+	// comma ok || error ok
+	input, _ := reader.ReadString('\n')
+	fmt.Println("Thanks for your input:", input)
+}
+
+// if the first letter is captial then it is the public otherwise private
+const LoginToken string = "This is my variable token"
+
+func main() {
+
+	// variables()
+	userInput()
 }
