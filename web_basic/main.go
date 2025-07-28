@@ -14,7 +14,8 @@ func main() {
 	// handling_web_request()
 	// handling_url()
 	// get_request()
-	post_request()
+	// post_request()
+	form_post_request()
 }
 
 func handling_web_request() {
@@ -90,4 +91,18 @@ func post_request() {
 	data, _ := io.ReadAll(res.Body)
 	fmt.Println(string(data))
 	defer res.Body.Close()
+}
+
+func form_post_request() {
+	// formdata
+
+	data := url.Values{}
+	data.Add("name", "Pranav Shinde")
+	data.Add("role", "author")
+
+	res, _ := http.PostForm(myUrl+"/postform", data)
+	content, _ := io.ReadAll(res.Body)
+
+	defer res.Body.Close()
+	fmt.Println(string(content))
 }
