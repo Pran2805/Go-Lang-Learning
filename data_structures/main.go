@@ -112,6 +112,8 @@ func structures() {
 	fmt.Println(pranav)
 	fmt.Printf("%+v", pranav)
 	fmt.Println(pranav.Name)
+	pranav.getEmail()
+	pranav.getEmail()
 }
 func main() {
 	// pointers()
@@ -119,4 +121,8 @@ func main() {
 	// slices()
 	// maps()
 	structures() // no oop in go lang
+}
+
+func (u User) getEmail() {
+	fmt.Println(u.Email)
 }
