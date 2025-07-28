@@ -4,12 +4,18 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
-func main() {
-	var url string = "https://jsonplaceholder.typicode.com/todos/1"
+const myUrl string = "https://jsonplaceholder.typicode.com/todos/1"
 
-	res, err := http.Get(url)
+func main() {
+	handling_web_request()
+	handling_url()
+}
+
+func handling_web_request() {
+	res, err := http.Get(myUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -28,4 +34,18 @@ func main() {
 	}
 
 	fmt.Println(string(dataBytes))
+}
+
+func handling_url() {
+	//parsing url
+	res, err := url.Parse(myUrl)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(res)
+	fmt.Println(res.Scheme) // mongodb / https /
+	fmt.Println(res.Host)
+	fmt.Println(res.Path)
+	fmt.Println(res.RawQuery)
+
 }
