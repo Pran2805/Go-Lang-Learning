@@ -13,7 +13,8 @@ const myUrl string = "http://localhost:8000"
 func main() {
 	// handling_web_request()
 	// handling_url()
-	get_request()
+	// get_request()
+	post_request()
 }
 
 func handling_web_request() {
@@ -75,4 +76,18 @@ func get_request() {
 	byteContent, _ := resString.Write(content)
 	fmt.Println("Message content:", byteContent)
 	fmt.Println("Message:", resString.String())
+}
+
+func post_request() {
+	// fake json data or payload
+	requestBody := strings.NewReader(`
+	{
+		"name": "Pranav Shinde",
+		"role": "author"
+	}`)
+	res, _ := http.Post(myUrl+"/post", "application/json", requestBody)
+	// fmt.Println("res", res)
+	data, _ := io.ReadAll(res.Body)
+	fmt.Println(string(data))
+	defer res.Body.Close()
 }
