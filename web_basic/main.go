@@ -5,13 +5,15 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
-const myUrl string = "https://jsonplaceholder.typicode.com/todos/1"
+const myUrl string = "http://localhost:8000"
 
 func main() {
-	handling_web_request()
-	handling_url()
+	// handling_web_request()
+	// handling_url()
+	get_request()
 }
 
 func handling_web_request() {
@@ -48,4 +50,29 @@ func handling_url() {
 	fmt.Println(res.Path)
 	fmt.Println(res.RawQuery)
 
+}
+
+func get_request() {
+	res, err := http.Get(myUrl)
+	if err != nil {
+		panic(err)
+	}
+
+	defer res.Body.Close()
+	fmt.Println("Status Code", res.StatusCode)
+	fmt.Println("Content", res.ContentLength)
+
+	// content, err := io.ReadAll(res.Body)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// fmt.Println("message:", string(content))
+
+	// another way
+	var resString strings.Builder
+	content, _ := io.ReadAll(res.Body)
+	byteContent, _ := resString.Write(content)
+	fmt.Println("Message content:", byteContent)
+	fmt.Println("Message:", resString.String())
 }
