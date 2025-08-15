@@ -14,7 +14,8 @@ type User struct {
 }
 
 func main() {
-	EncodeJson()
+	// EncodeJson()
+	DecodedJson()
 }
 func EncodeJson() {
 	userdata := []User{
@@ -28,4 +29,31 @@ func EncodeJson() {
 	}
 	fmt.Printf("%s\n", json_data)
 
+}
+
+func DecodedJson() {
+	jsonData := []byte(`
+	{
+	"FullName": "Pranav Shinde",
+	"Age": 20,
+	 "Password":"MyPassword",
+	 "Author":"admin"
+	 }
+		`)
+
+	var data User
+
+	checkValid := json.Valid(jsonData)
+
+	if checkValid {
+		fmt.Println("Json is Valid")
+		json.Unmarshal(jsonData, &data)
+		fmt.Printf("%#v\n", data)
+	} else {
+		fmt.Println("Json is not valid")
+	}
+
+	var myOnlineData map[string]interface{}
+	json.Unmarshal(jsonData, &myOnlineData)
+	fmt.Printf("%#v", myOnlineData)
 }
