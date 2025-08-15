@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -34,7 +35,39 @@ func (c *Course) IsEmpty() bool {
 
 }
 func main() {
+	fmt.Println("Creating API's")
+	r := mux.NewRouter()
 
+	courses = append(courses, Course{
+		CourseId:    "1",
+		CourseName:  "ReactJs",
+		CoursePrice: 499,
+		Author: &Author{
+			Fullname: "Pranav",
+			Website:  "website",
+		},
+	})
+	courses = append(courses, Course{
+		CourseId:    "2",
+		CourseName:  "ExpressJs",
+		CoursePrice: 399,
+		Author: &Author{
+			Fullname: "Pranav",
+			Website:  "another website",
+		},
+	})
+
+	r.HandleFunc("/", serveHome).Methods("GET")
+	r.HandleFunc("/courses", getAllCourses).Methods("GET")
+	r.HandleFunc("/courses/{id}", getCourseById).Methods("GET")
+
+	// another
+	r.HandleFunc("/course/add", addCourse).Methods("POST")
+	r.HandleFunc("/course/update/{id}", updateCourse).Methods("PUT")
+	r.HandleFunc("/course/delete/{id}", updateCourse).Methods("DELETE")
+
+	// listen
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
 
 // controllers - seperate file and folder
@@ -121,4 +154,18 @@ func updateCourse(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode("Id is not Found")
 	return
+}
+
+func deleteCourse(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Delete Course")
+	w.Header().Set("Content-Type", "application/json")
+
+	params := mux.Vars(r)
+
+	for index, course := range courses {
+		if course.CourseId == params["id"] {
+			courses = append(courses[:index], courses[index+1:]...)
+			break
+		}
+	}
 }
