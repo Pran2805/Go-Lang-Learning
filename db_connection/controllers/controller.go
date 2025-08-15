@@ -41,9 +41,15 @@ func init() {
 	fmt.Println("Connection Instance is ready")
 }
 
+type Data struct {
+	ID        primitive.ObjectID `json:"_id" bson:"_id"`
+	MovieName string             `json:"movieName"`
+	Watched   bool               `json:"watched"`
+}
+
 // Mongodb helpers - keep in seperate file
 // insert 1 record
-func insertMovie(movie models.Netflix) {
+func insertMovie(movie models.Netflix) Data {
 	insertData, err := collection.InsertOne(context.Background(), movie)
 
 	if err != nil {
@@ -51,16 +57,27 @@ func insertMovie(movie models.Netflix) {
 	}
 
 	fmt.Println("Inserted Movie data in db", insertData)
+	id, ok := insertData.InsertedID.(primitive.ObjectID)
+	if !ok {
+		log.Fatal("InsertedID is not a primitive.ObjectID")
+	}
+
+	data := Data{
+		ID:        id,
+		MovieName: movie.Movie,
+		Watched:   movie.Watched,
+	}
+	return data
 }
 
 // update 1 record
 func updateMovie(movieId string) {
 	id, _ := primitive.ObjectIDFromHex(movieId)
 
-	filter := bson.M{"_id": id}
 	update := bson.M{"$set": bson.M{"watched": true}}
 
-	result, err := collection.UpdateByID(context.Background(), filter, update)
+	fmt.Println(update)
+	result, err := collection.UpdateByID(context.Background(), id, update)
 
 	if err != nil {
 		log.Fatal(err)
@@ -103,19 +120,19 @@ func getAllMovies() []primitive.M {
 		log.Fatal(err)
 	}
 
+	defer cursor.Close(context.Background())
 	var movies []primitive.M
 
 	for cursor.Next(context.Background()) {
 		var movie bson.M
-		err := cursor.Decode(&movie)
-
-		if err == nil {
+		if err := cursor.Decode(&movie); err != nil {
 			log.Fatal(err)
 		}
+
 		movies = append(movies, movie)
 	}
+	fmt.Println(movies)
 
-	cursor.Close(context.Background())
 	return movies
 }
 
@@ -133,8 +150,8 @@ func CreateMovie(w http.ResponseWriter, r *http.Request) {
 	var movie models.Netflix
 	_ = json.NewDecoder(r.Body).Decode(&movie)
 
-	insertMovie(movie)
-	json.NewEncoder(w).Encode(movie)
+	data := insertMovie(movie)
+	json.NewEncoder(w).Encode(data)
 }
 
 func MarkAsWatched(w http.ResponseWriter, r *http.Request) {
