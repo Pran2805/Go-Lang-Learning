@@ -2,9 +2,12 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/pran2805/go-lang-learning/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -39,7 +42,6 @@ func init() {
 }
 
 // Mongodb helpers - keep in seperate file
-
 // insert 1 record
 func insertMovie(movie models.Netflix) {
 	insertData, err := collection.InsertOne(context.Background(), movie)
@@ -115,4 +117,53 @@ func getAllMovies() []primitive.M {
 
 	cursor.Close(context.Background())
 	return movies
+}
+
+// Actual Controller's
+func GetAllMovies(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencode")
+	allMovies := getAllMovies()
+	json.NewEncoder(w).Encode(allMovies)
+}
+
+func CreateMovie(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencode")
+	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+
+	var movie models.Netflix
+	_ = json.NewDecoder(r.Body).Decode(&movie)
+
+	insertMovie(movie)
+	json.NewEncoder(w).Encode(movie)
+}
+
+func MarkAsWatched(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencode")
+	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
+
+	params := mux.Vars(r)
+
+	updateMovie(params["id"])
+	json.NewEncoder(w).Encode(params["id"])
+}
+
+func DeleteMovieById(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencode")
+	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
+
+	params := mux.Vars(r)
+
+	deleteMovieById(params["id"])
+
+	json.NewEncoder(w).Encode(params["id"])
+
+}
+func DeleteAll(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencode")
+	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
+
+	count := deleteAllMovies()
+
+	json.NewEncoder(w).Encode(count)
+
 }
